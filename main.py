@@ -1,17 +1,30 @@
 import random as rnd
 
 
-list_deck = [6,6,6,6,7,7,7,7,8,8,8,8,9,9,9,9,10,10,10,10,'j','j','j','j','l','l','l','l','k','k','k','a','a','a','a']
+list_deck = [6,6,6,6,7,7,7,7,8,8,8,8,9,9,9,9,10,10,10,10,'jack','jack','jack','jack','lady','lady','lady','lady','king','king','king','ace','ace','ace','ace']
 
 
 class Player:
-    def __init__(self, name, points):
+    def __init__(self, name):
         self.name = name
-        self.points = points
+        self.points = 0
         self.hand = []
 
     def accept_card(self,card):
         self.hand.append(card)
+
+    def count_point(self):
+        for card in self.hand:
+            if card == 'j' or card == 'l' or card == 'k':
+                self.points += 11
+            elif type(card) == int:
+                self.points += int(card)
+            else:
+                if self.points >= 11:
+                    self.points += 1
+                else:
+                    self.points += 11
+        return self.points
 
 
 class Deck:
@@ -37,9 +50,9 @@ class Game:
 
         naming = str(input("Введите свое имя: "))
         if naming != '':
-            player1 = Player(f'{naming}', 100)
-            enemy = Player('Enemy', 100)
-            diller = Player('Diller', 100)
+            player1 = Player(f'{naming}')
+            enemy = Player('Enemy')
+            diller = Player('Diller')
 
             self.players.append(player1)
             self.players.append(diller)
@@ -49,7 +62,7 @@ class Game:
                 player.accept_card(self.deck.deal())
                 player.accept_card(self.deck.deal())
 
-            print('Это твои карты',player1.hand)
+            print('Это твои карты',player1.hand[0],player1.hand[1],'и общее число очков за эти карты',player1.count_point())
 
 game1 = Game()
 game1.play()
