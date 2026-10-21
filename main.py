@@ -1,68 +1,65 @@
-import random as rnd
+from player import Player
+from deck import GameDeck
 
+deck1 = GameDeck()
+deck1.shuffle()
 
-list_deck = [6,6,6,6,7,7,7,7,8,8,8,8,9,9,9,9,10,10,10,10,'jack','jack','jack','jack','lady','lady','lady','lady','king','king','king','ace','ace','ace','ace']
+print('Добро пожаловать в игру «21»!')
+print('Выберите действие:')
+print('1 — Начать игру')
+print('2 — Узнать правила')
 
+choice = input('Ваш выбор: ')
 
-class Player:
-    def __init__(self, name):
-        self.name = name
-        self.points = 0
-        self.hand = []
+if choice == '1':
+    print('Отлично! Давайте начнём!')
+    print('Введите своё имя:')
 
-    def accept_card(self,card):
-        self.hand.append(card)
+    player1 = Player(input(),[deck1.give_card() for _ in range(2)])
+    player1.calculate_points()
 
-    def count_point(self):
-        for card in self.hand:
-            if card == 'j' or card == 'l' or card == 'k':
-                self.points += 11
-            elif type(card) == int:
-                self.points += int(card)
+    print(f'Это твои карты {(player1.hand)} а это то сколько они стоят {player1.point}.')
+    if player1.point > 21:
+        print('Ебать ты долбаеб как ты проебал')
+    elif player1.point == 21:
+        print('Красава')
+
+    print('Если тебе нужны еще карты напиши 1')
+    count_card_give = int(input())
+
+    if count_card_give == 1:
+        for _ in range(10):
+            player1.hand += [deck1.give_card()]
+            player1.calculate_points()
+            print('Если тебе нужны еще карты напиши 1')
+            print(f'Это твои карты {(player1.hand)} а это то сколько они стоят {player1.point}.')
+            if player1.point > 21:
+                print('Ебать ты долбаеб как ты проебал')
+                break
+            elif player1.point == 21:
+                print('Красава')
+
+            print('Если тебе нужны еще карты напиши 1')
+            if int(input()) == 1:
+                continue
             else:
-                if self.points >= 11:
-                    self.points += 1
-                else:
-                    self.points += 11
-        return self.points
+                break
+else:
+    print('Правила игры «21»')
+    print('''
+    Цель игры — набрать как можно больше очков, не превышая 21.
 
+    В начале игры каждому игроку раздаются две карты.
+    Числовые карты оцениваются по своему номиналу.
+    Валеты, дамы и короли приносят по 10 очков.
+    Туз приносит 11 очков, но если сумма очков превышает 21,
+    его стоимость может быть уменьшена до 1 очка.
 
-class Deck:
-    def __init__(self,list_card):
-        self.list_card = list_card
+    Если сумма очков игрока превышает 21, он проигрывает.
 
-    def shuffle(self):
-        rnd.shuffle(self.list_card)
+    Ваша задача — набрать больше очков, чем соперник,
+    не превысив при этом 21 очко.
 
-    def deal(self):
-        return self.list_card.pop(-1)
-
-
-class Game:
-    def __init__(self):
-        self.deck = Deck(list_deck)
-        self.players = []
-    def play(self):
-
-        self.deck.shuffle()
-
-        starting = int(input("введите число из перечня\n 1.Начать игру\n"))
-
-        naming = str(input("Введите свое имя: "))
-        if naming != '':
-            player1 = Player(f'{naming}')
-            enemy = Player('Enemy')
-            diller = Player('Diller')
-
-            self.players.append(player1)
-            self.players.append(diller)
-            self.players.append(enemy)
-
-            for player in self.players:
-                player.accept_card(self.deck.deal())
-                player.accept_card(self.deck.deal())
-
-            print('Это твои карты',player1.hand[0],player1.hand[1],'и общее число очков за эти карты',player1.count_point())
-
-game1 = Game()
-game1.play()
+    Удачи в игре!
+    ''')
+    print('Теперь вы готовы сыграть!')
