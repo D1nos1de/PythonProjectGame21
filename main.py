@@ -1,65 +1,59 @@
 from player import Player
 from deck import GameDeck
+from game import *
 
 deck1 = GameDeck()
-deck1.shuffle()
+deck1.shuffle_card()
 
-print('Добро пожаловать в игру «21»!')
-print('Выберите действие:')
-print('1 — Начать игру')
-print('2 — Узнать правила')
+diller1 = Player([deck1.give_card()])
+diller1.calculate_points()
 
-choice = input('Ваш выбор: ')
+start_game()
 
-if choice == '1':
-    print('Отлично! Давайте начнём!')
-    print('Введите своё имя:')
+glob_choice = input()
+if glob_choice == '1':
 
-    player1 = Player(input(),[deck1.give_card() for _ in range(2)])
+    player1 = Player([deck1.give_card(),deck1.give_card()])
     player1.calculate_points()
 
-    print(f'Это твои карты {(player1.hand)} а это то сколько они стоят {player1.point}.')
-    if player1.point > 21:
-        print('Ебать ты долбаеб как ты проебал')
-    elif player1.point == 21:
-        print('Красава')
+    show_card(player1)
+    show_card_d(diller1)
 
-    print('Если тебе нужны еще карты напиши 1')
-    count_card_give = int(input())
+    diller1.hand.append(deck1.give_card())
 
-    if count_card_give == 1:
-        for _ in range(10):
-            player1.hand += [deck1.give_card()]
-            player1.calculate_points()
-            print('Если тебе нужны еще карты напиши 1')
-            print(f'Это твои карты {(player1.hand)} а это то сколько они стоят {player1.point}.')
-            if player1.point > 21:
-                print('Ебать ты долбаеб как ты проебал')
-                break
-            elif player1.point == 21:
-                print('Красава')
+    show_menu()
 
-            print('Если тебе нужны еще карты напиши 1')
-            if int(input()) == 1:
-                continue
-            else:
-                break
+    choice = input()
+
+    if choice == '0':
+
+        player1.hand.append(deck1.give_card())
+        player1.calculate_points()
+        show_card(player1)
+
+        if player1.point > 21:
+            lose()
+        else:
+            result(player1,diller1,deck1)
+
+
+
+    elif choice == '1':
+        result(player1,diller1,deck1)
+
+    else:
+        for _ in range(int(choice)):
+            player1.hand.append(deck1.give_card())
+        player1.calculate_points()
+        show_card(player1)
+
+        if player1.point > 21:
+            lose()
+        else:
+            result(player1,diller1,deck1)
+
+elif glob_choice == '2':
+    show_rule()
 else:
-    print('Правила игры «21»')
-    print('''
-    Цель игры — набрать как можно больше очков, не превышая 21.
+    print('Вы ввели не то что нужно попробуйте еще раз')
 
-    В начале игры каждому игроку раздаются две карты.
-    Числовые карты оцениваются по своему номиналу.
-    Валеты, дамы и короли приносят по 10 очков.
-    Туз приносит 11 очков, но если сумма очков превышает 21,
-    его стоимость может быть уменьшена до 1 очка.
-
-    Если сумма очков игрока превышает 21, он проигрывает.
-
-    Ваша задача — набрать больше очков, чем соперник,
-    не превысив при этом 21 очко.
-
-    Удачи в игре!
-    ''')
-    print('Теперь вы готовы сыграть!')
